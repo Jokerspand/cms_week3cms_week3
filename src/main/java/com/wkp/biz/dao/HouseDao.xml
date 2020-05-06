@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wkp.biz.dao.HouseDao">
+
+<resultMap type="House" id="h">
+<id property="id" column="id"/>
+<result property="date" column="date"/>
+<result property="name" column="name"/>
+<result property="phone" column="phone"/>
+<result property="bz" column="bz"/>
+<result property="tid" column="tid"/>
+<collection property="types" select="selecttype" column="id"></collection>
+
+
+
+</resultMap>
+
+
+
+<select id="listhouse" resultMap="h" >
+	select * from house <!-- a left join type b on a.tid=b.id -->
+<where>
+<!-- <if test="p1!=null">
+price >=#{p1}
+</if>
+<if test="p2!=null">
+and price &lt;=#{p2}
+</if> -->
+<if test="d1!=null and d1!=''">
+and date >=#{d1}
+</if>
+<if test="d2!=null and d2!=''">
+and date  &lt;=#{d2}
+</if>
+
+<if test="name!=null and name!=''">
+
+and name like '%${name}%'
+</if>
+<if test="phone!=null and phone!=''">
+
+and phone like '%${phone}%'
+</if>
+</where>
+
+</select>
+
+
+<select id="selecttype" resultType="Type">
+select * from type a left join middle b on a.id=b.tid where b.hid=#{id} 
+
+</select>
+
+
+<insert id="insertHouse">
+insert into house (date,name,phone,bz,tid) values
+<foreach collection="list" item="s" separator=",">
+
+(#{s.date},#{s.name},#{s.phone},#{s.bz},#{s.tid})
+</foreach>
+
+
+</insert>
+
+</mapper>
